@@ -108,8 +108,8 @@ function renderCell(cell){
         cell.pois.forEach(poi=>{
 
 
-            if(!poi.discovered)
-                return;
+            if(!isPOIDiscovered(poi.id))
+            return;
 
 
 
