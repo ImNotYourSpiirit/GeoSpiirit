@@ -128,9 +128,17 @@ async function startGame() {
 
 }
 
-startGame();
+const map = L.map('map').setView(
+    [-25.2744,133.7751],
+    5
+);
+
+
+// lancement du brouillard
 
 initFog();
+
+startGame();
 
 discoverTile(
     playerLatLng.lat,
