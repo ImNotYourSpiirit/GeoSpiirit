@@ -130,7 +130,7 @@ async function startGame() {
 
 startGame();
 
-createFog();
+initFog();
 
 discoverTile(
     playerLatLng.lat,
