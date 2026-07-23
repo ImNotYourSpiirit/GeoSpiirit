@@ -101,39 +101,3 @@ async function loadPOIs() {
     pois = await response.json();
 
 }
-
-loadPOIs();
-
-function discoverPOIs(){
-
-pois.forEach(poi=>{
-
-if(poi.discovered) return;
-
-const d=
-
-map.distance(
-
-playerMarker.getLatLng(),
-
-[poi.lat,poi.lng]
-
-);
-
-if(d<200){
-
-poi.discovered=true;
-
-showMessage(
-
-"Découverte : "
-
-+poi.name
-
-);
-
-}
-
-});
-
-}
