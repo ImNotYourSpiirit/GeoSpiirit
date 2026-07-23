@@ -117,10 +117,14 @@ async function startGame() {
     
     discoverCities();
     
+    setInterval(()=>{
+
     updateWorld(
-    player.lat,
-    player.lng
-);
+        player.lat,
+        player.lng
+    );
+
+},5000);
 
 }
 
