@@ -22,8 +22,8 @@ function renderCell(cell){
         cell.roads.forEach(road=>{
 
 
-            if(!road.discovered)
-                return;
+            if(!isRoadDiscovered(road.id))
+            return;
 
 
 
