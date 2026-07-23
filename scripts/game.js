@@ -91,3 +91,15 @@ requestAnimationFrame(updateGame);
 loadGame();
 
 updateGame();
+
+let pois = [];
+
+async function loadPOIs() {
+
+    const response = await fetch("data/pois.json");
+
+    pois = await response.json();
+
+}
+
+loadPOIs();
