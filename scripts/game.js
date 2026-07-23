@@ -101,3 +101,15 @@ async function loadPOIs() {
     pois = await response.json();
 
 }
+
+async function startGame() {
+
+    await loadCities();
+
+    updateHUD();
+
+    updateGame();
+
+}
+
+startGame();
