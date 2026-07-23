@@ -64,3 +64,26 @@ discovered:false
 }
 
 ];
+
+let cityMarkers = [];
+
+function drawCities() {
+
+    cityMarkers.forEach(marker => map.removeLayer(marker));
+    cityMarkers = [];
+
+    cities.forEach(city => {
+
+        if (!city.discovered) return;
+
+        const marker = L.marker([city.lat, city.lng]);
+
+        marker.bindPopup(city.name);
+
+        marker.addTo(map);
+
+        cityMarkers.push(marker);
+
+    });
+
+}
