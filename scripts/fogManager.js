@@ -7,7 +7,7 @@
 const fogManager = {
 
 
-    tileSize:0.5,
+    tileSize:0.05,
 
 
     activeFog:{},
