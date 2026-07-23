@@ -8,6 +8,19 @@ const map = L.map("map",{
 
 }).setView([-25.2,133.8],5);
 
+const satellite = L.tileLayer(
+'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+{
+    attribution:'© Esri'
+}
+);
+
+const labels = L.tileLayer(
+'https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',
+{
+    attribution:'© Esri'
+}
+);
 
 // ==============================
 // MAP TILE
@@ -20,6 +33,8 @@ L.tileLayer(
 }
 ).addTo(map);
 
+satellite.addTo(map);
+labels.addTo(map);
 
 // ==============================
 // AUSTRALIA LIMITS
