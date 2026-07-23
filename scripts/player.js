@@ -1,1 +1,7 @@
-// player is defined in style.js — additional fields handled there
+updatePOIs(
+
+    playerLatLng.lat,
+
+    playerLatLng.lng
+
+);
