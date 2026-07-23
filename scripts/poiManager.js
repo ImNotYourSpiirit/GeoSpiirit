@@ -208,3 +208,27 @@ function updatePOIs(playerLat,playerLng){
     }
 
 }
+
+// ==========================================
+// Message de découverte
+// ==========================================
+
+function showDiscoveryMessage(poi){
+
+    const box=document.getElementById("messageBox");
+
+    box.innerHTML=
+
+        "📍 Nouveau lieu découvert !<br><b>"+
+
+        poi.name+
+
+        "</b>";
+
+    setTimeout(()=>{
+
+        box.innerHTML="";
+
+    },4000);
+
+}
