@@ -129,3 +129,5 @@ async function startGame() {
 }
 
 startGame();
+
+createFog();
