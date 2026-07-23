@@ -65,3 +65,29 @@ updateHUD();
 }
 
 setInterval(consumeResources,1000);
+
+function updateGame(){
+
+player.lat=playerMarker.getLatLng().lat;
+
+player.lng=playerMarker.getLatLng().lng;
+
+discoverTile(
+
+player.lat,
+
+player.lng
+
+);
+
+discoverCities();
+
+updateHUD();
+
+requestAnimationFrame(updateGame);
+
+}
+
+loadGame();
+
+updateGame();
