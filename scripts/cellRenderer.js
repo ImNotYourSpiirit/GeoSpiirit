@@ -62,8 +62,8 @@ function renderCell(cell){
         cell.places.forEach(place=>{
 
 
-            if(!place.discovered)
-                return;
+            if(!isPlaceDiscovered(place.id))
+            return;
 
 
 
