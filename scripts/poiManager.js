@@ -100,3 +100,21 @@ function distanceKm(lat1,lng1,lat2,lng2){
     );
 
 }
+
+// ==========================================
+// Choisir l'icône
+// ==========================================
+
+function getPOIIcon(type){
+
+    return L.icon({
+
+        iconUrl:"assets/icons/"+type+".png",
+
+        iconSize:[32,32],
+
+        iconAnchor:[16,32]
+
+    });
+
+}
