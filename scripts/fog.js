@@ -176,3 +176,5 @@ function isTileDiscovered(lat,lng){
     );
 
 }
+
+console.log("FOG CHARGE");
