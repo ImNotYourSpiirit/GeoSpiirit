@@ -87,3 +87,9 @@ function drawCities() {
     });
 
 }
+
+city.discovered = true;
+
+drawCities();
+
+showMessage("📍 " + city.name + " découverte !");
