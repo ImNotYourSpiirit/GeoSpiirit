@@ -1,6 +1,6 @@
 // =================================
 // GeoSpiirit - Fog Manager
-// Gestion dynamique du brouillard
+// Fog permanent par cellules
 // =================================
 
 
@@ -13,7 +13,23 @@ const fogManager = {
     activeFog:{},
 
 
-    radius:2
+    layer:L.layerGroup(),
+
+
+    // Australie pour le moment
+
+    bounds:{
+
+        minLat:-44,
+
+        maxLat:-10,
+
+        minLng:112,
+
+        maxLng:154
+
+    }
+
 
 };
 
@@ -21,7 +37,64 @@ const fogManager = {
 
 
 // ================================
-// Créer une clé de cellule
+// Initialisation
+// ================================
+
+function initFog(){
+
+
+    fogManager.layer.addTo(map);
+
+
+
+    for(
+        let lat=fogManager.bounds.minLat;
+        lat<fogManager.bounds.maxLat;
+        lat+=fogManager.tileSize
+    ){
+
+
+        for(
+            let lng=fogManager.bounds.minLng;
+            lng<fogManager.bounds.maxLng;
+            lng+=fogManager.tileSize
+        ){
+
+
+            const key=getFogTileKey(
+                lat,
+                lng
+            );
+
+
+            if(
+                !fog.discovered[key]
+            ){
+
+                createFogTile(
+                    key,
+                    lat,
+                    lng
+                );
+
+            }
+
+
+        }
+
+
+    }
+
+
+}
+
+
+
+
+
+
+// ================================
+// Clé cellule
 // ================================
 
 
@@ -29,12 +102,12 @@ function getFogTileKey(lat,lng){
 
 
     const x=Math.floor(
-        lng / fogManager.tileSize
+        lng/fogManager.tileSize
     );
 
 
     const y=Math.floor(
-        lat / fogManager.tileSize
+        lat/fogManager.tileSize
     );
 
 
@@ -45,32 +118,29 @@ function getFogTileKey(lat,lng){
 
 
 
+
+
+
 // ================================
-// Créer une tuile de brouillard
+// Création tuile fog
 // ================================
 
 
-function createFogTile(x,y){
-
-
-    const key=`${x}_${y}`;
+function createFogTile(key,lat,lng){
 
 
 
-    if(fogManager.activeFog[key])
+    if(
+        fogManager.activeFog[key]
+    )
         return;
-
-
-
-    const lat=y*fogManager.tileSize;
-
-    const lng=x*fogManager.tileSize;
 
 
 
     const tile=L.rectangle(
 
         [
+
             [
                 lat,
                 lng
@@ -80,7 +150,9 @@ function createFogTile(x,y){
                 lat+fogManager.tileSize,
                 lng+fogManager.tileSize
             ]
+
         ],
+
 
         {
 
@@ -88,7 +160,7 @@ function createFogTile(x,y){
 
             fillColor:"#000",
 
-            fillOpacity:0.85
+            fillOpacity:0.90
 
         }
 
@@ -96,8 +168,9 @@ function createFogTile(x,y){
 
 
 
-    tile.addTo(map);
-
+    tile.addTo(
+        fogManager.layer
+    );
 
 
     fogManager.activeFog[key]=tile;
@@ -108,12 +181,15 @@ function createFogTile(x,y){
 
 
 
+
+
+
 // ================================
-// Retirer une tuile découverte
+// Découvrir une cellule
 // ================================
 
 
-function removeFogTile(lat,lng){
+function discoverFogTile(lat,lng){
 
 
     const key=getFogTileKey(
@@ -122,12 +198,16 @@ function removeFogTile(lat,lng){
     );
 
 
+    fog.discovered[key]=true;
+
+
+
     if(
         fogManager.activeFog[key]
     ){
 
 
-        map.removeLayer(
+        fogManager.layer.removeLayer(
             fogManager.activeFog[key]
         );
 
@@ -144,8 +224,9 @@ function removeFogTile(lat,lng){
 
 
 
+
 // ================================
-// Mise à jour autour du joueur
+// Mise à jour exploration
 // ================================
 
 
@@ -153,68 +234,10 @@ function updateFog(lat,lng){
 
 
 
-    const currentX=Math.floor(
-        lng/fogManager.tileSize
+    discoverFogTile(
+        lat,
+        lng
     );
-
-
-    const currentY=Math.floor(
-        lat/fogManager.tileSize
-    );
-
-
-
-    for(
-        let x=-fogManager.radius;
-        x<=fogManager.radius;
-        x++
-    ){
-
-
-        for(
-            let y=-fogManager.radius;
-            y<=fogManager.radius;
-            y++
-        ){
-
-
-            const tileX=currentX+x;
-
-            const tileY=currentY+y;
-
-
-
-            const key=`${tileX}_${tileY}`;
-
-
-
-            // Si déjà découvert
-            if(
-                fog.discovered[key]
-            ){
-
-                removeFogTile(
-                    tileY*fogManager.tileSize,
-                    tileX*fogManager.tileSize
-                );
-
-            }
-
-            else{
-
-
-                createFogTile(
-                    tileX,
-                    tileY
-                );
-
-
-            }
-
-
-        }
-
-    }
 
 
 }
