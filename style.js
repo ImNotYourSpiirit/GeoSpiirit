@@ -44,6 +44,17 @@ map.setMinZoom(4);
 
 map.setMaxZoom(18);
 
+setInterval(()=>{
+
+
+updateFog(
+    playerLatLng.lat,
+    playerLatLng.lng
+);
+
+
+},2000);
+
 
 // ==============================
 // PLAYER DATA
@@ -227,3 +238,5 @@ alert(
 // ==============================
 
 map.flyTo(start.coords,9);
+
+
