@@ -105,10 +105,17 @@ async function loadPOIs() {
 async function startGame() {
 
     await loadCities();
+    
+    
+    await loadPOIs();
 
     updateHUD();
 
     updateGame();
+    
+    discoverPOIs();
+    
+    discoverCities();
 
 }
 
