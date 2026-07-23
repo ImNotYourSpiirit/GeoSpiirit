@@ -1,1 +1,38 @@
-//
+[
+  {
+    "id": 1,
+    "type": "fuel",
+    "name": "Shell Sydney",
+    "city": "Sydney",
+    "lat": -33.8674,
+    "lng": 151.2069,
+    "discovered": false
+  },
+  {
+    "id": 2,
+    "type": "hotel",
+    "name": "Hilton Sydney",
+    "city": "Sydney",
+    "lat": -33.8701,
+    "lng": 151.2074,
+    "discovered": false
+  },
+  {
+    "id": 3,
+    "type": "restaurant",
+    "name": "McDonald's Sydney",
+    "city": "Sydney",
+    "lat": -33.8695,
+    "lng": 151.2098,
+    "discovered": false
+  },
+  {
+    "id": 4,
+    "type": "landmark",
+    "name": "Sydney Opera House",
+    "city": "Sydney",
+    "lat": -33.8568,
+    "lng": 151.2153,
+    "discovered": false
+  }
+]
