@@ -42,10 +42,9 @@ const fogManager = {
 
 function initFog(){
 
-
     fogManager.layer.addTo(map);
 
-
+    let count = 0;
 
     for(
         let lat=fogManager.bounds.minLat;
@@ -77,6 +76,8 @@ function initFog(){
                     lng
                 );
 
+                count++;
+
             }
 
 
@@ -84,7 +85,6 @@ function initFog(){
 
 
     }
-
 
 }
 

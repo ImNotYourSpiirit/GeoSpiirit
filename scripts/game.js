@@ -20,11 +20,15 @@ cities.forEach(city=>{
 
 if(city.discovered) return;
 
+const cityCoords = city.coords || [city.lat, city.lng];
+
+if(!cityCoords || cityCoords[0] == null) return;
+
 const d=map.distance(
 
 [player.lat,player.lng],
 
-[city.lat,city.lng]
+cityCoords
 
 );
 
@@ -68,17 +72,14 @@ setInterval(consumeResources,1000);
 
 function updateGame(){
 
-player.lat=playerMarker.getLatLng().lat;
+if(typeof playerMarker !== 'undefined'){
+    player.lat=playerMarker.getLatLng().lat;
+    player.lng=playerMarker.getLatLng().lng;
+}
 
-player.lng=playerMarker.getLatLng().lng;
-
-discoverTile(
-
-player.lat,
-
-player.lng
-
-);
+if(typeof discoverFogTile === 'function'){
+    discoverFogTile(player.lat, player.lng);
+}
 
 discoverCities();
 
@@ -92,27 +93,14 @@ loadGame();
 
 updateGame();
 
-let pois = [];
-
-async function loadPOIs() {
-
-    const response = await fetch("data/pois.json");
-
-    pois = await response.json();
-
-}
-
 async function startGame() {
 
     await loadCities();
-    
     
     await loadPOIs();
 
     updateHUD();
 
-    updateGame();
-    
     discoverPOIs();
     
     discoverCities();
@@ -128,19 +116,7 @@ async function startGame() {
 
 }
 
-const map = L.map('map').setView(
-    [-25.2744,133.7751],
-    5
-);
-
-
 // lancement du brouillard
-
 initFog();
 
 startGame();
-
-discoverTile(
-    playerLatLng.lat,
-    playerLatLng.lng
-);

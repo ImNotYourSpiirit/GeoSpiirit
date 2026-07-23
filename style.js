@@ -56,12 +56,9 @@ map.setMaxZoom(18);
 
 setInterval(()=>{
 
-
-updateFog(
-    playerLatLng.lat,
-    playerLatLng.lng
-);
-
+    if(typeof updateFog === 'function'){
+        updateFog(player.lat, player.lng);
+    }
 
 },2000);
 
@@ -80,7 +77,23 @@ food:5,
 
 water:5,
 
-energy:100
+energy:100,
+
+lat:-25.2744,
+
+lng:133.7751,
+
+xp:0,
+
+level:1,
+
+vehicle:"car",
+
+discoveredCities:[],
+
+journal:[],
+
+inventory:[]
 
 };
 
@@ -248,5 +261,29 @@ alert(
 // ==============================
 
 map.flyTo(start.coords,9);
+
+
+// ==============================
+// PLAYER MARKER (draggable)
+// ==============================
+
+player.lat = start.coords[0];
+player.lng = start.coords[1];
+
+const playerMarker = L.marker(
+    [player.lat, player.lng],
+    { draggable: true }
+).addTo(map);
+
+playerMarker.bindPopup("Vous êtes ici");
+
+playerMarker.on('dragend', function(){
+    const pos = playerMarker.getLatLng();
+    player.lat = pos.lat;
+    player.lng = pos.lng;
+    if(typeof discoverFogTile === 'function'){
+        discoverFogTile(player.lat, player.lng);
+    }
+});
 
 

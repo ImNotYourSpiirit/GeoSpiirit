@@ -38,6 +38,8 @@ const messageBox = document.getElementById("messageBox");
 
 function showMessage(text){
 
+if(!messageBox) return;
+
 messageBox.innerHTML=text;
 
 messageBox.style.opacity="1";
