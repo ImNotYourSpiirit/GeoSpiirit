@@ -4,15 +4,7 @@
 
 
 const fog = {
-
-    tileSize: 0.25,
-
-    discovered: {},
-
-    layers: {},
-
-    fogLayer: null
-
+    discovered:{}
 };
 
 
