@@ -118,3 +118,93 @@ function getPOIIcon(type){
     });
 
 }
+
+// ==========================================
+// Mettre à jour les POI autour du joueur
+// ==========================================
+
+function updatePOIs(playerLat,playerLng){
+
+    for(const poi of poiManager.pois){
+
+        const d=distanceKm(
+
+            playerLat,
+
+            playerLng,
+
+            poi.lat,
+
+            poi.lng
+
+        );
+
+        // Chargement
+
+        if(d<poiManager.loadDistance){
+
+            if(!poiManager.activeMarkers[poi.id]){
+
+                const marker=L.marker(
+
+                    [poi.lat,poi.lng],
+
+                    {
+
+                        icon:getPOIIcon(poi.type)
+
+                    }
+
+                );
+
+                // Invisible tant qu'il n'est pas découvert
+
+                if(poiManager.discovered[poi.id]){
+
+                    marker.addTo(map);
+
+                }
+
+                poiManager.activeMarkers[poi.id]=marker;
+
+            }
+
+        }
+
+        else{
+
+            if(poiManager.activeMarkers[poi.id]){
+
+                map.removeLayer(
+
+                    poiManager.activeMarkers[poi.id]
+
+                );
+
+                delete poiManager.activeMarkers[poi.id];
+
+            }
+
+        }
+
+        // Découverte
+
+        if(
+
+            d<poiManager.discoverDistance &&
+
+            !poiManager.discovered[poi.id]
+
+        ){
+
+            poiManager.discovered[poi.id]=true;
+
+            poiManager.activeMarkers[poi.id].addTo(map);
+
+            showDiscoveryMessage(poi);
+
+        }
+
+    }
+
+}
