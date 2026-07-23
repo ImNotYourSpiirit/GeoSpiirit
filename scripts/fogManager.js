@@ -158,9 +158,8 @@ function createFogTile(key,lat,lng){
 
             stroke:false,
 
-            fillColor:"#000",
-
-            fillOpacity:1
+            fillColor: "#2b2b2b",
+            fillOpacity: 1
 
         }
 
