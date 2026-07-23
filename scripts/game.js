@@ -116,6 +116,11 @@ async function startGame() {
     discoverPOIs();
     
     discoverCities();
+    
+    updateWorld(
+    player.lat,
+    player.lng
+);
 
 }
 
