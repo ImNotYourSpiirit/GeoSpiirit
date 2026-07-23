@@ -33,3 +33,19 @@ XP : ${player.xp}
 `;
 
 }
+
+const messageBox = document.getElementById("messageBox");
+
+function showMessage(text){
+
+messageBox.innerHTML=text;
+
+messageBox.style.opacity="1";
+
+setTimeout(()=>{
+
+messageBox.style.opacity="0";
+
+},4000);
+
+}
