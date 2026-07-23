@@ -26,3 +26,13 @@ const player = {
     inventory: []
 
 };
+
+playerLatLng = newPosition;
+
+
+// Mise à jour du fog
+
+updateFog(
+    playerLatLng.lat,
+    playerLatLng.lng
+);
