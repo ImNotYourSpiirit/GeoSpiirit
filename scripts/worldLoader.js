@@ -1,23 +1,36 @@
-// ======================================
-// GeoSpiirit - World Loader
-// Chargement dynamique du monde
-// ======================================
+// ===========================================
+// GeoSpiirit
+// World Loader v2
+// ===========================================
+
+const worldLoader = {
+
+    chunkSize: 0.25,
+
+    loadRadius: 1,
+
+    loadedChunks: {},
+
+    loading: false
+
+};
 
 
-let loadedCells = {};
 
 
-// Taille d'une cellule en degrés GPS
-// Plus petit = plus précis mais plus de fichiers
-const CELL_SIZE = 0.1;
+// ===========================================
+// Clé d'un chunk
+// ===========================================
 
+function getChunkKey(lat,lng){
 
+    const x=Math.floor(
+        lng/worldLoader.chunkSize
+    );
 
-// Retourne l'identifiant d'une cellule
-function getCellID(lat, lng){
-
-    const x = Math.floor(lat / CELL_SIZE);
-    const y = Math.floor(lng / CELL_SIZE);
+    const y=Math.floor(
+        lat/worldLoader.chunkSize
+    );
 
     return `${x}_${y}`;
 
@@ -25,173 +38,261 @@ function getCellID(lat, lng){
 
 
 
-// Trouve les cellules autour du joueur
 
-function getNearbyCells(lat, lng, radius = 1){
+// ===========================================
+// Coordonnées d'un chunk
+// ===========================================
 
-    const cells = [];
+function getChunkCoords(key){
 
-    const currentX = Math.floor(lat / CELL_SIZE);
-    const currentY = Math.floor(lng / CELL_SIZE);
+    const split=key.split("_");
 
+    return{
 
+        x:Number(split[0]),
 
-    for(let x=-radius; x<=radius; x++){
+        y:Number(split[1])
 
-        for(let y=-radius; y<=radius; y++){
-
-
-            cells.push(
-                `${currentX+x}_${currentY+y}`
-            );
-
-
-        }
-
-    }
-
-
-    return cells;
+    };
 
 }
 
 
 
-function processCell(cell){
 
 
-    renderCell(cell);
+// ===========================================
+// Charger un chunk
+// ===========================================
 
+async function loadChunk(x,y){
 
+    const key=`${x}_${y}`;
 
-    console.log(
-
-        "Cellule analysée :",
-
-        cell.id
-
-    );
-
-
-}
-
-
+    if(worldLoader.loadedChunks[key])
+        return;
 
     try{
 
+        const response=
+        await fetch(
 
-        const response = await fetch(
-
-            `data/world/australia/cells/${cellID}.json`
+        `data/chunks/${key}.json`
 
         );
 
+        const chunk=
+        await response.json();
 
-        if(!response.ok){
+        worldLoader.loadedChunks[key]=chunk;
 
-            console.log(
-                "Cellule inexistante : ",
-                cellID
-            );
+        if(chunk.pois){
 
-            return;
+            chunk.pois.forEach(p=>{
+
+                poiManager.pois.push(p);
+
+            });
 
         }
 
+        console.log(
+            "Chunk chargé :",
+            key
+        );
 
+    }
 
-        const data = await response.json();
-
-
-
-        loadedCells[cellID] = data;
-
-
+    catch{
 
         console.log(
-            "🌍 Cellule chargée : ",
-            cellID
+            "Chunk vide :",
+            key
         );
 
-
-
-        processCell(data);
-
-
-
     }
-
-    catch(error){
-
-
-        console.error(
-            "Erreur chargement cellule : ",
-            error
-        );
-
-
-    }
-
 
 }
 
+// ===========================================
+// Décharger un chunk
+// ===========================================
 
+function unloadChunk(key){
 
-// Charge le monde autour du joueur
+    if(
+        !worldLoader.loadedChunks[key]
+    )
+        return;
+
+    const chunk=
+    worldLoader.loadedChunks[key];
+
+    if(chunk.pois){
+
+        chunk.pois.forEach(poi=>{
+
+            delete poiManager.activeMarkers[poi.id];
+
+        });
+
+    }
+
+    delete worldLoader.loadedChunks[key];
+
+}
+
+// ===========================================
+// Mise à jour du monde
+// ===========================================
 
 async function updateWorld(lat,lng){
 
+    if(worldLoader.loading)
+        return;
 
-    const neededCells = getNearbyCells(
-        lat,
-        lng,
-        1
+    worldLoader.loading=true;
+
+    const center=getChunkCoords(
+
+        getChunkKey(lat,lng)
+
     );
 
+    const wanted={};
 
+    for(
 
-    for(const cell of neededCells){
+        let x=-worldLoader.loadRadius;
 
-        await loadCell(cell);
+        x<=worldLoader.loadRadius;
+
+        x++
+
+    ){
+
+        for(
+
+            let y=-worldLoader.loadRadius;
+
+            y<=worldLoader.loadRadius;
+
+            y++
+
+        ){
+
+            const cx=center.x+x;
+
+            const cy=center.y+y;
+
+            const key=`${cx}_${cy}`;
+
+            wanted[key]=true;
+
+            await loadChunk(
+
+                cx,
+
+                cy
+
+            );
+
+        }
 
     }
 
+    Object.keys(
 
+        worldLoader.loadedChunks
 
-    unloadUnusedCells(
-        neededCells
-    );
+    ).forEach(key=>{
 
+        if(!wanted[key]){
+
+            unloadChunk(key);
+
+        }
+
+    });
+
+    worldLoader.loading=false;
 
 }
 
+// ===========================================
+// Mise à jour du monde
+// ===========================================
 
+async function updateWorld(lat,lng){
 
-// Fonction appelée quand une cellule arrive
+    if(worldLoader.loading)
+        return;
 
-function processCell(cell){
+    worldLoader.loading=true;
 
+    const center=getChunkCoords(
 
-    /*
-    
-    Ici plus tard :
+        getChunkKey(lat,lng)
 
-    - routes
-    - POI
-    - bâtiments
-    - localités
+    );
 
-    */
+    const wanted={};
 
+    for(
 
-    if(cell.pois){
+        let x=-worldLoader.loadRadius;
 
-        console.log(
-            cell.pois.length,
-            "POI trouvés"
-        );
+        x<=worldLoader.loadRadius;
+
+        x++
+
+    ){
+
+        for(
+
+            let y=-worldLoader.loadRadius;
+
+            y<=worldLoader.loadRadius;
+
+            y++
+
+        ){
+
+            const cx=center.x+x;
+
+            const cy=center.y+y;
+
+            const key=`${cx}_${cy}`;
+
+            wanted[key]=true;
+
+            await loadChunk(
+
+                cx,
+
+                cy
+
+            );
+
+        }
 
     }
 
+    Object.keys(
+
+        worldLoader.loadedChunks
+
+    ).forEach(key=>{
+
+        if(!wanted[key]){
+
+            unloadChunk(key);
+
+        }
+
+    });
+
+    worldLoader.loading=false;
 
 }
+
