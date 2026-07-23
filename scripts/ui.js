@@ -4,23 +4,23 @@ function updateHUD(){
 
 hud.innerHTML=`
 
-💰 ${player.money}$
+💰 ${Math.round(player.money)}$
 
 <br>
 
-⛽ ${player.fuel.toFixed(1)} L
+⛽ ${Math.round(player.fuel)} L
 
 <br>
 
-🍞 ${player.food}
+🍞 ${Math.round(player.food)}
 
 <br>
 
-💧 ${player.water}
+💧 ${Math.round(player.water)}
 
 <br>
 
-⚡ ${player.energy}
+⚡ ${Math.round(player.energy)}
 
 <br>
 
