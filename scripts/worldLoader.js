@@ -57,18 +57,23 @@ function getNearbyCells(lat, lng, radius = 1){
 
 
 
-// Charge une cellule
-
-async function loadCell(cellID){
+function processCell(cell){
 
 
-    // Déjà chargée
+    renderCell(cell);
 
-    if(loadedCells[cellID]){
 
-        return;
 
-    }
+    console.log(
+
+        "Cellule analysée :",
+
+        cell.id
+
+    );
+
+
+}
 
 
 
