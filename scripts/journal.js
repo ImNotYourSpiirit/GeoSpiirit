@@ -5,3 +5,5 @@ function addJournalEntry(text){
     player.journal.push(text);
 
 }
+
+addJournalEntry(city.name);
