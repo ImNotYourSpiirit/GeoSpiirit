@@ -118,14 +118,6 @@ async function startGame() {
 
 await loadPOIs();
 
-updatePOIs(
-
-    playerLatLng.lat,
-
-    playerLatLng.lng
-
-);
-
 // lancement du brouillard
 initFog();
 
