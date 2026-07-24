@@ -65,52 +65,122 @@ function getChunkCoords(key){
 // Charger un chunk
 // ===========================================
 
+
 async function loadChunk(x,y){
+
 
     const key=`${x}_${y}`;
 
+
+
     if(worldLoader.loadedChunks[key])
+
         return;
+
+
+
 
     try{
 
-        const response=
-        await fetch(
 
-        `data/chunks/${key}.json`
+        const response = await fetch(
+
+            `data/chunks/${key}.json`
 
         );
 
-        const chunk=
-        await response.json();
+
+
+        const chunk = await response.json();
+
+
 
         worldLoader.loadedChunks[key]=chunk;
 
+
+
+        // ==========================
+        // Charger les POI
+        // ==========================
+
+
         if(chunk.pois){
 
-            chunk.pois.forEach(p=>{
 
-                poiManager.pois.push(p);
+            chunk.pois.forEach(poi=>{
+
+
+                const exists =
+
+                poiManager.pois.some(
+
+                    p=>p.id===poi.id
+
+                );
+
+
+
+                if(!exists){
+
+
+                    poiManager.pois.push(poi);
+
+
+                }
+
 
             });
 
+
         }
 
+
+
+
+
+        // ==========================
+        // Charger les routes
+        // ==========================
+
+
+        if(chunk.segments){
+
+
+            loadRoadSegments(chunk);
+
+
+        }
+
+
+
+
         console.log(
+
             "Chunk chargé :",
+
             key
+
         );
+
+
 
     }
 
-    catch{
+
+    catch(error){
+
 
         console.log(
-            "Chunk vide :",
+
+            "Impossible de charger",
+
             key
+
         );
 
+
     }
+
 
 }
 
@@ -120,25 +190,70 @@ async function loadChunk(x,y){
 
 function unloadChunk(key){
 
-    if(
-        !worldLoader.loadedChunks[key]
-    )
+
+    if(!worldLoader.loadedChunks[key])
+
         return;
 
-    const chunk=
+
+
+
+    const chunk =
     worldLoader.loadedChunks[key];
 
-    if(chunk.pois){
 
-        chunk.pois.forEach(poi=>{
 
-            delete poiManager.activeMarkers[poi.id];
+    // ==========================
+    // Retirer les routes
+    // ==========================
+
+
+    if(chunk.segments){
+
+
+        chunk.segments.forEach(segment=>{
+
+
+            if(
+                roadSegmentManager.activeLines[segment.id]
+            ){
+
+
+                map.removeLayer(
+
+                    roadSegmentManager.activeLines[segment.id]
+
+                );
+
+
+                delete
+                roadSegmentManager.activeLines[segment.id];
+
+
+            }
+
 
         });
 
+
     }
 
+
+
+
+
     delete worldLoader.loadedChunks[key];
+
+
+
+    console.log(
+
+        "Chunk supprimé :",
+
+        key
+
+    );
+
 
 }
 
