@@ -121,4 +121,12 @@ await loadPOIs();
 // lancement du brouillard
 initFog();
 
+updateRoadDiscovery(
+
+    playerLatLng.lat,
+
+    playerLatLng.lng
+
+);
+
 startGame();
