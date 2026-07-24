@@ -240,3 +240,149 @@ function updateFog(lat,lng){
 
 
 }
+
+// ==========================================
+// GeoSpiirit - Révélation du fog par les routes
+// ==========================================
+
+
+
+function revealFogAroundRoad(segment){
+
+
+    if(!segment.points)
+        return;
+
+
+
+    const revealDistance = 0.08; 
+    // environ 8 km autour du segment
+
+
+
+    segment.points.forEach(point=>{
+
+
+        revealFogArea(
+
+            point[0],
+
+            point[1],
+
+            revealDistance
+
+        );
+
+
+    });
+
+
+}
+
+
+
+
+
+
+// ==========================================
+// Révéler une zone circulaire
+// ==========================================
+
+
+function revealFogArea(
+    lat,
+    lng,
+    radius
+){
+
+
+
+    const tileRadius = Math.ceil(
+
+        radius / fogManager.tileSize
+
+    );
+
+
+
+    const centerX = Math.floor(
+
+        lng / fogManager.tileSize
+
+    );
+
+
+
+    const centerY = Math.floor(
+
+        lat / fogManager.tileSize
+
+    );
+
+
+
+
+
+    for(
+        let x=-tileRadius;
+        x<=tileRadius;
+        x++
+    ){
+
+
+        for(
+            let y=-tileRadius;
+            y<=tileRadius;
+            y++
+        ){
+
+
+
+            const tileX =
+            centerX+x;
+
+
+
+            const tileY =
+            centerY+y;
+
+
+
+            const tileLat =
+            tileY*fogManager.tileSize;
+
+
+
+            const tileLng =
+            tileX*fogManager.tileSize;
+
+
+
+            removeFogTile(
+
+                tileLat,
+
+                tileLng
+
+            );
+
+
+
+            // mémoire de découverte
+
+            const key =
+            `${tileX}_${tileY}`;
+
+
+
+            fog.discovered[key]=true;
+
+
+
+        }
+
+
+    }
+
+
+}
