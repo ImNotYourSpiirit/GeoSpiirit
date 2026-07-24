@@ -7,8 +7,11 @@
 const fogManager = {
 
 
-    tileSize:0.1,
+    tileSize:0.25,
 
+    revealRadius: 3,
+
+    visibleTiles: {},
 
     activeFog:{},
 
@@ -66,19 +69,13 @@ function initFog(){
             );
 
 
-            if(
-                !fog.discovered[key]
-            ){
+            createFogTile(
+                key,
+                lat,
+                lng
+            );
 
-                createFogTile(
-                    key,
-                    lat,
-                    lng
-                );
-
-                count++;
-
-            }
+            count++;
 
 
         }
@@ -231,13 +228,38 @@ function discoverFogTile(lat,lng){
 
 function updateFog(lat,lng){
 
+    const r  = fogManager.revealRadius;
+    const cx = Math.floor(lng / fogManager.tileSize);
+    const cy = Math.floor(lat / fogManager.tileSize);
 
+    // Build the set of tiles that should be visible this frame
+    const newVisible = {};
+    for(let dy = -r; dy <= r; dy++){
+        for(let dx = -r; dx <= r; dx++){
+            newVisible[`${cx+dx}_${cy+dy}`] = true;
+        }
+    }
 
-    discoverFogTile(
-        lat,
-        lng
-    );
+    // Reveal tiles that just entered the vision zone
+    for(const key in newVisible){
+        if(fogManager.activeFog[key]){
+            fogManager.layer.removeLayer(fogManager.activeFog[key]);
+            delete fogManager.activeFog[key];
+        }
+    }
 
+    // Re-fog tiles that just left the vision zone
+    const prev = fogManager.visibleTiles;
+    for(const key in prev){
+        if(!newVisible[key] && !fogManager.activeFog[key]){
+            const parts = key.split('_');
+            const tileLng = parseInt(parts[0]) * fogManager.tileSize;
+            const tileLat = parseInt(parts[1]) * fogManager.tileSize;
+            createFogTile(key, tileLat, tileLng);
+        }
+    }
+
+    fogManager.visibleTiles = newVisible;
 
 }
 

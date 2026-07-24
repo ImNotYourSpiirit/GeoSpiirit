@@ -77,8 +77,8 @@ if(typeof playerMarker !== 'undefined'){
     player.lng=playerMarker.getLatLng().lng;
 }
 
-if(typeof discoverFogTile === 'function'){
-    discoverFogTile(player.lat, player.lng);
+if(typeof updateFog === 'function'){
+    updateFog(player.lat, player.lng);
 }
 
 discoverCities();
@@ -116,17 +116,7 @@ async function startGame() {
 
 }
 
-await loadPOIs();
-
 // lancement du brouillard
 initFog();
-
-updateRoadDiscovery(
-
-    playerLatLng.lat,
-
-    playerLatLng.lng
-
-);
 
 startGame();
